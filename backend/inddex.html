@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-time Pose Detection</title>
+</head>
+<body>
+  <h1>Real-time Pose Detection</h1>
+  <video id="video" width="640" height="480" autoplay></video>
+  <p id="result">Waiting for result...</p>
+
+  <script>
+    const video = document.getElementById('video');
+    const resultText = document.getElementById('result');
+
+    // Access the webcam
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(err => console.error("Error accessing webcam: ", err));
+
+    // Connect to WebSocket server
+    const socket = new WebSocket('ws://localhost:8000/ws');
+
+    socket.onmessage = (event) => {
+      resultText.textContent = `Result: ${event.data}`;
+    };
+
+    // Capture frames and send to backend
+    video.addEventListener('play', () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+
+      setInterval(() => {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob((blob) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(blob);
+          reader.onloadend = () => {
+            const base64data = reader.result.split(',')[1]; // Extract base64
+            socket.send(base64data);
+          };
+        }, 'image/jpeg');
+      }, 100); // ส่งเฟรมทุก 100 มิลลิวินาที
+    });
+  </script>
+</body>
+</html>
