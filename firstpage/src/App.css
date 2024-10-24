@@ -1,3 +1,51 @@
+/* 1. Use a more-intuitive box-sizing model */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* 2. Remove default margin */
+* {
+  margin: 0;
+}
+
+body {
+  /* 3. Add accessible line-height */
+  line-height: 1.5;
+  /* 4. Improve text rendering */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 5. Improve media defaults */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* 6. Inherit fonts for form controls */
+input, button, textarea, select {
+  font: inherit;
+}
+
+/* 7. Avoid text overflows */
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+/* 8. Improve line wrapping */
+p {
+  text-wrap: pretty;
+}
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
+/*
+  9. Create a root stacking context
+*/
+#root, #__next {
+  isolation: isolate;
+}
+
 .app{
   background-color: #ffff;
 }
@@ -8,18 +56,25 @@
   position: relative;
   padding: 10px 0;
   font: 1.25em Garuda;
+  padding: 0 4.5em;
 }
 
-.title::before,
+.title::before{
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid black;
+}
 .title::after {
   content: '';
   flex: 1;
   border-bottom: 1px solid black;
-  margin: 0 10px;
 }
 
 @font-face {
   font-family: 'Garuda';
   src: url('./Garuda.ttf') format('truetype');
+  
+  font-family: 'Higuen Serif';
+  src: url('./Higuen Serif.otf') format('truetype');
 }
 
